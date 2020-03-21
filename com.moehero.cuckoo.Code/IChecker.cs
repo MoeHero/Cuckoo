@@ -1,7 +1,9 @@
-﻿namespace com.moehero.cuckoo.Code
+﻿using System.Threading.Tasks;
+
+namespace com.moehero.cuckoo.Code
 {
     internal interface IChecker
     {
-        string Check();
+        Task<string> Check();
     }
 }

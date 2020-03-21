@@ -21,8 +21,9 @@ namespace com.moehero.cuckoo.Code
             var req = (HttpWebRequest)WebRequest.Create(request.Url);
             req.Method = request.Method;
             req.Proxy = null;
-            req.KeepAlive = true;
+            req.KeepAlive = false;
             req.CookieContainer = request.Cookie;
+            req.AllowAutoRedirect = false;
 
             if(request.Method.ToUpper() == "POST") {
                 req.ContentType = "application/x-www-form-urlencoded";

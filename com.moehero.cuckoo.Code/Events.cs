@@ -9,6 +9,7 @@ namespace com.moehero.cuckoo.Code
     {
         public void AppEnable(object sender, CQAppEnableEventArgs e) {
             Config.AppDirectory = e.CQApi.AppDirectory;
+            CheckerManager.Init(e.CQApi);
         }
 
         public void GroupMessage(object sender, CQGroupMessageEventArgs e) {

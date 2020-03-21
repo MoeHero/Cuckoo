@@ -16,6 +16,8 @@ namespace com.moehero.cuckoo.Code
             new Route { URI = "停用机器人", Function = typeof(DisableFunction) },
             new Route { URI = "本群启用通知", Function = typeof(GroupEnableFunction) },
             new Route { URI = "本群停用通知", Function = typeof(GroupDisableFunction) },
+            new Route { URI = "添加管理员{AdminQQ}", Function = typeof(AddAdminFunction) },
+            new Route { URI = "移除管理员{AdminQQ}", Function = typeof(RemoveAdminFunction) },
         };
 
         private static readonly List<string> IgnoreDisable = new List<string> {
@@ -81,6 +83,7 @@ namespace com.moehero.cuckoo.Code
             var result = new Dictionary<string, string>();
             var startIndex = URI.IndexOf("{");
             if(startIndex == -1) return result;
+            message = new Regex("\\[CQ:at,\\s*qq=(.+?)\\]").Replace(message, " $1 ");
             var msg_param = message.Substring(startIndex).Split(SEPARATOR, StringSplitOptions.RemoveEmptyEntries);
             if(msg_param.Length == 0) return null;
             var uri_param = Regex.Matches(URI, @"{(.+?)}");

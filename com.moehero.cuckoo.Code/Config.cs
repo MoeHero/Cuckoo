@@ -36,46 +36,6 @@ namespace com.moehero.cuckoo.Code
         }
 
         /// <summary>
-        /// 数据库主机
-        /// </summary>
-        internal static string DBHost {
-            get => GetValue("127.0.0.1");
-            set => SetValue(value);
-        }
-
-        /// <summary>
-        /// 数据库端口
-        /// </summary>
-        internal static ushort DBPort {
-            get => GetValue(3306);
-            set => SetValue(value);
-        }
-
-        /// <summary>
-        /// 数据库用户名
-        /// </summary>
-        internal static string DBUsername {
-            get => GetValue("root");
-            set => SetValue(value);
-        }
-
-        /// <summary>
-        /// 数据库密码
-        /// </summary>
-        internal static string DBPassword {
-            get => GetValue("");
-            set => SetValue(value);
-        }
-
-        /// <summary>
-        /// 数据库名
-        /// </summary>
-        internal static string DBDatabase {
-            get => GetValue("");
-            set => SetValue(value);
-        }
-
-        /// <summary>
         /// 机器人开关
         /// </summary>
         internal static bool Enabled {
