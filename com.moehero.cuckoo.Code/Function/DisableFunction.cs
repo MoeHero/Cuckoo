@@ -1,8 +1,8 @@
 ﻿using Native.Sdk.Cqp.Model;
 
-namespace com.moehero.cuckoo.Code.Functions
+namespace com.moehero.cuckoo.Code.Function
 {
-    internal class DisableFunction : BaseFunction
+    internal class DisableFunction : FunctionBase
     {
         private readonly Group _group;
         private readonly QQ _qq;

@@ -11,26 +11,26 @@ namespace com.moehero.cuckoo.Code
     //TODO 重构
     internal static class Config
     {
-        private static IniSection ini;
-        private static IniObject iniObject;
+        private static IniSection _ini;
+        private static IniObject _iniObject;
 
         private static void InitConfig() {
             var path = AppDirectory + "Config.ini";
             if(!File.Exists(path)) File.WriteAllText(path, "");
-            iniObject = IniObject.Load(path);
-            ini = iniObject.Find(s => s.Name == "Application") ?? new IniSection("Application");
+            _iniObject = IniObject.Load(path);
+            _ini = _iniObject.Find(s => s.Name == "Application") ?? new IniSection("Application");
 
             EnabledGroups = GetValue<long>("EnabledGroups");
         }
 
         public static long OwnerNumber { get; } = 562416714;
 
-        private static string appDirectory;
+        private static string _appDirectory;
 
         public static string AppDirectory {
-            get => appDirectory;
+            get => _appDirectory;
             set {
-                appDirectory = value;
+                _appDirectory = value;
                 InitConfig();
             }
         }
@@ -43,46 +43,46 @@ namespace com.moehero.cuckoo.Code
             set => SetValue(value);
         }
 
-        private static ObservableCollection<long> enabledGruops;
+        private static ObservableCollection<long> _enabledGruops;
 
         /// <summary>
         /// 群启用列表
         /// </summary>
         internal static ObservableCollection<long> EnabledGroups {
             get {
-                if(enabledGruops == null) EnabledGroups = new ObservableCollection<long>();
-                return enabledGruops;
+                if(_enabledGruops == null) EnabledGroups = new ObservableCollection<long>();
+                return _enabledGruops;
             }
             set {
-                if(enabledGruops != null) enabledGruops.CollectionChanged -= CollectionChanged;
-                enabledGruops = value;
-                SetValue(enabledGruops, "EnabledGroups");
-                enabledGruops.CollectionChanged += CollectionChanged;
+                if(_enabledGruops != null) _enabledGruops.CollectionChanged -= CollectionChanged;
+                _enabledGruops = value;
+                SetValue(_enabledGruops, "EnabledGroups");
+                _enabledGruops.CollectionChanged += CollectionChanged;
 
                 void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-                    SetValue(enabledGruops, "EnabledGroups");
+                    SetValue(_enabledGruops, "EnabledGroups");
                 }
             }
         }
 
-        private static ObservableCollection<long> admins;
+        private static ObservableCollection<long> _admins;
 
         /// <summary>
         /// 管理员列表
         /// </summary>
         internal static ObservableCollection<long> Admins {
             get {
-                if(admins == null) Admins = new ObservableCollection<long>();
-                return admins;
+                if(_admins == null) Admins = new ObservableCollection<long>();
+                return _admins;
             }
             set {
-                if(admins != null) admins.CollectionChanged -= CollectionChanged;
-                admins = value;
-                SetValue(admins, "Admins");
-                admins.CollectionChanged += CollectionChanged;
+                if(_admins != null) _admins.CollectionChanged -= CollectionChanged;
+                _admins = value;
+                SetValue(_admins, "Admins");
+                _admins.CollectionChanged += CollectionChanged;
 
                 void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-                    SetValue(admins, "Admins");
+                    SetValue(_admins, "Admins");
                 }
             }
         }
@@ -91,7 +91,7 @@ namespace com.moehero.cuckoo.Code
 
         private static string GetValue(string defaultValue = "", [CallerMemberName] string key = "") {
             if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            return ini[key]?.ToString() ?? defaultValue;
+            return _ini[key]?.ToString() ?? defaultValue;
         }
 
         private static bool GetValue(bool defaultValue = false, [CallerMemberName] string key = "") {
@@ -122,12 +122,12 @@ namespace com.moehero.cuckoo.Code
 
         private static void SetValue(string value, [CallerMemberName] string key = "") {
             if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            if(ini.ContainsKey(key)) ini[key] = new IniValue(value);
-            else ini.Add(key, value);
+            if(_ini.ContainsKey(key)) _ini[key] = new IniValue(value);
+            else _ini.Add(key, value);
             //保存
-            if(iniObject.Exists(s => s.Name == "Application")) iniObject["Application"] = ini;
-            else iniObject.Add(ini);
-            iniObject.Save();
+            if(_iniObject.Exists(s => s.Name == "Application")) _iniObject["Application"] = _ini;
+            else _iniObject.Add(_ini);
+            _iniObject.Save();
         }
 
         private static void SetValue(bool value, [CallerMemberName] string key = "") {

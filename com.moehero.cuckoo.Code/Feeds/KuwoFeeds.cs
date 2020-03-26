@@ -3,35 +3,35 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace com.moehero.cuckoo.Code.Checker
+namespace com.moehero.cuckoo.Code.Feeds
 {
-    internal class KuwoChecker : IChecker
+    internal class KuwoFeeds : FeedsBase
     {
         private readonly List<string> _currentMusicList = new List<string>();
+        private readonly string _singerId;
 
-        public KuwoChecker() {
+        public override string Id => "Kuwo";
+
+        public override string Name => "酷我";
+
+        public KuwoFeeds(string singerId) {
+            _singerId = singerId;
             Init();
         }
 
-        public async Task<string> Check() {
-            var msg = "";
+        public override async Task<FeedsInfo> CheckUpdate() {
             foreach(var info in await GetMusicInfos()) {
                 if(_currentMusicList.Contains(info.Id)) continue;
-                msg += CreateMessage(info);
                 _currentMusicList.Add(info.Id);
+                return new FeedsInfo {
+                    Title = "丧妹新歌出炉啦! 快来听歌点赞分享噢!",
+                    Description = info.Name,
+                    Url = "http://www.kuwo.cn/play_detail/" + info.Id,
+                };
             }
-            return msg.Trim();
-        }
-
-        private string CreateMessage(MusicInfo info) {
-            var msg = new StringBuilder();
-            msg.AppendLine("丧妹新歌出炉啦! 快来听歌点赞分享噢!");
-            msg.AppendLine($"《{info.Name}》");
-            msg.AppendLine($"http://www.kuwo.cn/play_detail/{info.Id}");
-            return msg.ToString();
+            return null;
         }
 
         private async void Init() {
@@ -42,9 +42,9 @@ namespace com.moehero.cuckoo.Code.Checker
             var musicInfos = new List<MusicInfo>();
 
             var cookie = new CookieContainer();
-            await Http.Get("http://www.kuwo.cn/singer_detail/4185939", cookie);
+            await Http.Get("http://www.kuwo.cn/singer_detail/" + _singerId, cookie);
 
-            var req = (HttpWebRequest)WebRequest.Create($"http://www.kuwo.cn/api/www/artist/artistMusic?artistid=4185939&pn={page}&rn=100&reqId=da431400-6b7b-11ea-838a-659117e7515a");
+            var req = (HttpWebRequest)WebRequest.Create($"http://www.kuwo.cn/api/www/artist/artistMusic?artistid={_singerId}&pn={page}&rn=100");
             req.Proxy = null;
             req.KeepAlive = false;
             req.CookieContainer = cookie;

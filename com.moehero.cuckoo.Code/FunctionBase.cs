@@ -1,6 +1,6 @@
 ﻿namespace com.moehero.cuckoo.Code
 {
-    internal abstract class BaseFunction : IFunction
+    internal abstract class FunctionBase
     {
         public virtual string Description { get; } = "";
 

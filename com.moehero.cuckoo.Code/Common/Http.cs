@@ -32,9 +32,10 @@ namespace com.moehero.cuckoo.Code
             }
             try {
                 var response = req.GetResponse();
-                using(var streamReader = new StreamReader(response.GetResponseStream())) {
-                    return streamReader.ReadToEnd();
-                }
+                var streamReader = new StreamReader(response.GetResponseStream());
+                var r = streamReader.ReadToEnd();
+                streamReader.Close();
+                return r;
             } catch {
                 return SendRequest(request);
             }
@@ -45,12 +46,7 @@ namespace com.moehero.cuckoo.Code
         }
 
         public async static Task<JObject> GetJson(string url, CookieContainer cookie = null) {
-            try {
-                return JObject.Parse(await Get(url, cookie));
-            } catch {
-                //TODO 返回错误信息
-                return JObject.Parse("{'code': -9999}");
-            }
+            return JObject.Parse(await Get(url, cookie));
         }
 
         public static Task<string> Post(string url, string body, CookieContainer cookie = null) {
@@ -58,20 +54,7 @@ namespace com.moehero.cuckoo.Code
         }
 
         public async static Task<JObject> PostJson(string url, string body, CookieContainer cookie = null) {
-            try {
-                return JObject.Parse(await Post(url, body, cookie));
-            } catch {
-                //TODO 返回错误信息
-                return JObject.Parse("{'code': -9999}");
-            }
-        }
-
-        public static string BuildParam(object param) {
-            var _param = new Dictionary<string, string>();
-            foreach(var p in param.GetType().GetProperties())
-                _param.Add(p.Name, p.GetValue(param).ToString());
-            _param = _param.OrderBy(r => r.Key).ToDictionary(r => r.Key, r => r.Value);
-            return _param.Aggregate("", (current, p) => $"{current}{p.Key}={UrlEncode(p.Value)}&").TrimEnd('&');
+            return JObject.Parse(await Post(url, body, cookie));
         }
 
         public static string UrlEncode(string str) {

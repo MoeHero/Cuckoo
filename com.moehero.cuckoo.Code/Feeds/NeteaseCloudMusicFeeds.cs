@@ -1,41 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace com.moehero.cuckoo.Code.Checker
+namespace com.moehero.cuckoo.Code.Feeds
 {
-    internal class NeteaseCloudMusicChecker : IChecker
+    internal class NeteaseCloudMusicFeeds : FeedsBase
     {
         private readonly List<string> _currentMusicList = new List<string>();
+        private readonly string _singerId;
 
-        public NeteaseCloudMusicChecker() {
+        public override string Id => "NeteaseCloud";
+
+        public override string Name => "网易云音乐";
+
+        public NeteaseCloudMusicFeeds(string singerId) {
+            _singerId = singerId;
             Init();
         }
 
-        public async Task<string> Check() {
-            var msg = "";
+        public override async Task<FeedsInfo> CheckUpdate() {
             foreach(var info in await GetMusicInfos()) {
                 if(_currentMusicList.Contains(info.Id)) continue;
-                msg += CreateMessage(info);
                 _currentMusicList.Add(info.Id);
+                return new FeedsInfo {
+                    Title = "丧妹新歌出炉啦! 快来听歌点赞分享噢!",
+                    Description = info.Name,
+                    Url = "https://music.163.com/song?id=" + info.Id,
+                };
             }
-            return msg.Trim();
-        }
-
-        private string CreateMessage(MusicInfo info) {
-            var msg = new StringBuilder();
-            msg.AppendLine("丧妹新歌出炉啦! 快来听歌点赞分享噢!");
-            msg.AppendLine($"《{info.Name}》");
-            msg.AppendLine($"https://music.163.com/song?id={info.Id}");
-            return msg.ToString();
+            return null;
         }
 
         private async void Init() {
             _currentMusicList.AddRange(Array.ConvertAll(await GetMusicInfos(), m => m.Id));
-
-            _currentMusicList.RemoveAt(0);
         }
 
         private async Task<MusicInfo[]> GetMusicInfos(int page = 1) {

@@ -40,6 +40,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Transactions" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -50,26 +51,27 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BaseFunction.cs" />
+    <Compile Include="FeedsBase.cs" />
+    <Compile Include="FunctionBase.cs" />
     <Compile Include="CheckerManager.cs" />
-    <Compile Include="Checker\BilibiliLiveChecker.cs" />
-    <Compile Include="Checker\NeteaseCloudMusicChecker.cs" />
-    <Compile Include="Checker\KuwoChecker.cs" />
-    <Compile Include="Checker\KugouChecker.cs" />
-    <Compile Include="Checker\BilibiliVideoChecker.cs" />
-    <Compile Include="Config.cs" />
-    <Compile Include="Events.cs" />
-    <Compile Include="Functions\DisableFunction.cs" />
-    <Compile Include="Functions\EnableFunction.cs" />
-    <Compile Include="Functions\AddAdminFunction.cs" />
-    <Compile Include="Functions\GroupDisableFunction.cs" />
-    <Compile Include="Functions\RemoveAdminFunction.cs" />
-    <Compile Include="Functions\GroupEnableFunction.cs" />
-    <Compile Include="Http.cs" />
-    <Compile Include="IChecker.cs" />
-    <Compile Include="IFunction.cs" />
+    <Compile Include="Feeds\BilibiliLiveFeeds.cs" />
+    <Compile Include="Feeds\DouyinFeeds.cs" />
+    <Compile Include="Feeds\NeteaseCloudMusicFeeds.cs" />
+    <Compile Include="Feeds\KuwoFeeds.cs" />
+    <Compile Include="Feeds\KugouFeeds.cs" />
+    <Compile Include="Feeds\BilibiliVideoFeeds.cs" />
+    <Compile Include="Common\Config.cs" />
+    <Compile Include="EventHandler.cs" />
+    <Compile Include="Feeds\QQMusicFeeds.cs" />
+    <Compile Include="Function\DisableFunction.cs" />
+    <Compile Include="Function\EnableFunction.cs" />
+    <Compile Include="Function\AddAdminFunction.cs" />
+    <Compile Include="Function\GroupDisableFunction.cs" />
+    <Compile Include="Function\RemoveAdminFunction.cs" />
+    <Compile Include="Function\GroupEnableFunction.cs" />
+    <Compile Include="Common\Http.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Routes.cs" />
+    <Compile Include="Router.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Native.Sdk\Native.Sdk.csproj">

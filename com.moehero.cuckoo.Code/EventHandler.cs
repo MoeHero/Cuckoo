@@ -3,7 +3,7 @@ using Native.Sdk.Cqp.Interface;
 
 namespace com.moehero.cuckoo.Code
 {
-    public class Events :
+    public class EventHandler :
         IAppEnable,
         IGroupMessage
     {
@@ -13,7 +13,7 @@ namespace com.moehero.cuckoo.Code
         }
 
         public void GroupMessage(object sender, CQGroupMessageEventArgs e) {
-            Routes.Execute(e);
+            Router.Execute(e);
         }
     }
 }

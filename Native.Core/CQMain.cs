@@ -14,8 +14,8 @@ namespace Native.Core
 		/// </summary>
 		/// <param name="container">用于注册的 IOC 容器 </param>
 		public static void Register(IUnityContainer unityContainer) {
-			unityContainer.RegisterType<IAppEnable, Events>("应用已被启用");
-			unityContainer.RegisterType<IGroupMessage, Events>("群消息处理");
+			unityContainer.RegisterType<IAppEnable, EventHandler>("应用已被启用");
+			unityContainer.RegisterType<IGroupMessage, EventHandler>("群消息处理");
 		}
 	}
 }

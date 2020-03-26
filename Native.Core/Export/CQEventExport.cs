@@ -125,30 +125,6 @@ namespace Native.App.Export
 			}	
 			
 			/*	
-			 * Id: 1001	
-			 * Type: 1001	
-			 * Name: 酷Q启动事件	
-			 * Function: _eventStartup	
-			 * Priority: 30000	
-			 */	
-			if (AppData.UnityContainer.IsRegistered<ICQStartup> ("酷Q启动事件"))	
-			{	
-				Event_eventStartupHandler += AppData.UnityContainer.Resolve<ICQStartup> ("酷Q启动事件").CQStartup;	
-			}	
-			
-			/*	
-			 * Id: 1002	
-			 * Type: 1002	
-			 * Name: 酷Q关闭事件	
-			 * Function: _eventExit	
-			 * Priority: 30000	
-			 */	
-			if (AppData.UnityContainer.IsRegistered<ICQExit> ("酷Q关闭事件"))	
-			{	
-				Event_eventExitHandler += AppData.UnityContainer.Resolve<ICQExit> ("酷Q关闭事件").CQExit;	
-			}	
-			
-			/*	
 			 * Id: 1003	
 			 * Type: 1003	
 			 * Name: 应用已被启用	
@@ -216,48 +192,6 @@ namespace Native.App.Export
 				CQGroupMessageEventArgs args = new CQGroupMessageEventArgs (AppData.CQApi, AppData.CQLog, 2, 2, "群消息处理", "_eventGroupMsg", 30000, subType, msgId, fromGroup, fromQQ, fromAnonymous, msg.ToString(CQApi.DefaultEncoding), false);	
 				Event_eventGroupMsgHandler (typeof (CQEventExport), args);	
 				return (int)(args.Handler ? CQMessageHandler.Intercept : CQMessageHandler.Ignore);	
-			}	
-			return 0;	
-		}	
-		
-		/// <summary>	
-		/// 事件回调, 以下是对应 Json 文件的信息	
-		/// <para>Id: 1001</para>	
-		/// <para>Type: 1001</para>	
-		/// <para>Name: 酷Q启动事件</para>	
-		/// <para>Function: _eventStartup</para>	
-		/// <para>Priority: 30000</para>	
-		/// <para>IsRegex: False</para>	
-		/// </summary>	
-		public static event EventHandler<CQStartupEventArgs> Event_eventStartupHandler;	
-		[DllExport (ExportName = "_eventStartup", CallingConvention = CallingConvention.StdCall)]	
-		public static int Event_eventStartup ()	
-		{	
-			if (Event_eventStartupHandler != null)	
-			{	
-				CQStartupEventArgs args = new CQStartupEventArgs (AppData.CQApi, AppData.CQLog, 1001, 1001, "酷Q启动事件", "_eventStartup", 30000);	
-				Event_eventStartupHandler (typeof (CQEventExport), args);	
-			}	
-			return 0;	
-		}	
-		
-		/// <summary>	
-		/// 事件回调, 以下是对应 Json 文件的信息	
-		/// <para>Id: 1002</para>	
-		/// <para>Type: 1002</para>	
-		/// <para>Name: 酷Q关闭事件</para>	
-		/// <para>Function: _eventExit</para>	
-		/// <para>Priority: 30000</para>	
-		/// <para>IsRegex: False</para>	
-		/// </summary>	
-		public static event EventHandler<CQExitEventArgs> Event_eventExitHandler;	
-		[DllExport (ExportName = "_eventExit", CallingConvention = CallingConvention.StdCall)]	
-		public static int Event_eventExit ()	
-		{	
-			if (Event_eventExitHandler != null)	
-			{	
-				CQExitEventArgs args = new CQExitEventArgs (AppData.CQApi, AppData.CQLog, 1002, 1002, "酷Q关闭事件", "_eventExit", 30000);	
-				Event_eventExitHandler (typeof (CQEventExport), args);	
 			}	
 			return 0;	
 		}	
