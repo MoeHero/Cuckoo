@@ -26,7 +26,7 @@ namespace com.moehero.cuckoo.Code.Feeds
                 return new FeedsInfo {
                     Title = "丧妹新歌出炉啦! 快来听歌点赞分享噢!",
                     Description = info.Name,
-                    Url = "https://music.163.com/song?id=" + info.Id,
+                    Url = "https://music.163.com/song/" + info.Id,
                 };
             }
             return null;
@@ -39,7 +39,7 @@ namespace com.moehero.cuckoo.Code.Feeds
         private async Task<MusicInfo[]> GetMusicInfos(int page = 1) {
             var musicInfos = new List<MusicInfo>();
 
-            var r = await Http.Get("https://music.163.com/artist?id=31440981");
+            var r = await Http.Get("https://music.163.com/artist/" + _singerId);
             foreach(Match m in Regex.Matches(r, @"song\?id=(\d+)"">(.+?)<", RegexOptions.Multiline)) {
                 musicInfos.Add(new MusicInfo { Id = m.Groups[1].Value, Name = m.Groups[2].Value });
             }
