@@ -26,8 +26,8 @@ namespace com.moehero.cuckoo.Code.Feeds
                 if(postAt <= _lastPostAt) return null;
                 _lastPostAt = postAt;
                 return new FeedsInfo {
-                    Title = "丧妹更新投稿啦! 等你来三连支持噢!",
-                    Description = r["title"].Value<string>(),
+                    Slogan = GetRandomSlogan(),
+                    Title = info["title"].Value<string>(),
                     Url = "https://www.bilibili.com/video/av" + info["aid"].Value<string>(),
                 };
             }

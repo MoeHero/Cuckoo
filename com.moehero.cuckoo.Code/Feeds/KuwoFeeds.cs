@@ -26,8 +26,8 @@ namespace com.moehero.cuckoo.Code.Feeds
                 if(_currentMusicList.Contains(info.Id)) continue;
                 _currentMusicList.Add(info.Id);
                 return new FeedsInfo {
-                    Title = "丧妹新歌出炉啦! 快来听歌点赞分享噢!",
-                    Description = info.Name,
+                    Slogan = GetRandomSlogan(),
+                    Title = info.Name,
                     Url = "http://www.kuwo.cn/play_detail/" + info.Id,
                 };
             }
@@ -44,17 +44,8 @@ namespace com.moehero.cuckoo.Code.Feeds
             var cookie = new CookieContainer();
             await Http.Get("http://www.kuwo.cn/singer_detail/" + _singerId, cookie);
 
-            var req = (HttpWebRequest)WebRequest.Create($"http://www.kuwo.cn/api/www/artist/artistMusic?artistid={_singerId}&pn={page}&rn=100");
-            req.Proxy = null;
-            req.KeepAlive = false;
-            req.CookieContainer = cookie;
-            req.Headers.Add("csrf", cookie.GetCookies(new Uri("http://www.kuwo.cn"))?["kw_token"]?.Value);
-
-            var response = await req.GetResponseAsync();
-            var streamReader = new StreamReader(response.GetResponseStream());
-            var r = JObject.Parse(await streamReader.ReadToEndAsync());
-            streamReader.Close();
-
+            var headers = new WebHeaderCollection { ["csrf"] = cookie.GetCookies(new Uri("http://www.kuwo.cn"))?["kw_token"]?.Value };
+            var r = await Http.GetJson($"http://www.kuwo.cn/api/www/artist/artistMusic?artistid={_singerId}&pn={page}&rn=100", cookie, headers);
             foreach(var info in r["data"]["list"]) {
                 musicInfos.Add(new MusicInfo { Id = info["rid"].Value<string>(), Name = info["name"].Value<string>() });
             }

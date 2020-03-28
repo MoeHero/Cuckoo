@@ -25,8 +25,8 @@ namespace com.moehero.cuckoo.Code.Feeds
                 if(postAt <= _lastPostAt) return null;
                 _lastPostAt = postAt;
                 return new FeedsInfo {
-                    Title = "丧妹新歌出炉啦! 快来听歌点赞分享噢!",
-                    Description = info["title"].Value<string>(),
+                    Slogan = GetRandomSlogan(),
+                    Title = info["title"].Value<string>(),
                     Url = $"https://y.qq.com/n/yqq/song/{info["mid"].Value<string>()}.html",
                 };
             }

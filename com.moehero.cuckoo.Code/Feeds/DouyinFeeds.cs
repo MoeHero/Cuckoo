@@ -24,8 +24,8 @@ namespace com.moehero.cuckoo.Code.Feeds
                 if(_currentVideoList.Contains(info.Id)) continue;
                 _currentVideoList.Add(info.Id);
                 return new FeedsInfo {
-                    Title = "丧妹新歌出炉啦! 快来听歌点赞分享噢!",
-                    Description = info.Description,
+                    Slogan = GetRandomSlogan(),
+                    Title = info.Description,
                     Url = $"https://www.iesdouyin.com/share/video/{info.Id}/?mid",
                 };
             }

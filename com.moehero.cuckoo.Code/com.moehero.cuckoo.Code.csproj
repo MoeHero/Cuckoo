@@ -53,7 +53,7 @@
   <ItemGroup>
     <Compile Include="FeedsBase.cs" />
     <Compile Include="FunctionBase.cs" />
-    <Compile Include="CheckerManager.cs" />
+    <Compile Include="FeedsManager.cs" />
     <Compile Include="Feeds\BilibiliLiveFeeds.cs" />
     <Compile Include="Feeds\DouyinFeeds.cs" />
     <Compile Include="Feeds\NeteaseCloudMusicFeeds.cs" />
@@ -63,6 +63,9 @@
     <Compile Include="Common\Config.cs" />
     <Compile Include="EventHandler.cs" />
     <Compile Include="Feeds\QQMusicFeeds.cs" />
+    <Compile Include="Function\RemoveSloganFunction.cs" />
+    <Compile Include="Function\ListSloganFunction.cs" />
+    <Compile Include="Function\AddSloganFunction.cs" />
     <Compile Include="Function\DisableFunction.cs" />
     <Compile Include="Function\EnableFunction.cs" />
     <Compile Include="Function\AddAdminFunction.cs" />

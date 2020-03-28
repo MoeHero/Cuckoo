@@ -21,6 +21,9 @@ namespace com.moehero.cuckoo.Code
             new Route { URI = "本群停用", Function = typeof(GroupDisableFunction) },
             new Route { URI = "添加管理员{AdminQQ}", Function = typeof(AddAdminFunction) },
             new Route { URI = "移除管理员{AdminQQ}", Function = typeof(RemoveAdminFunction) },
+            new Route { URI = "添加口号{FeedsId}{Slogan}", Function = typeof(AddSloganFunction) },
+            new Route { URI = "删除口号{FeedsId}{SloganOrIndex}", Function = typeof(RemoveSloganFunction) },
+            new Route { URI = "口号列表{FeedsId}", Function = typeof(ListSloganFunction) },
         };
 
         public static void Execute(CQGroupMessageEventArgs e) {

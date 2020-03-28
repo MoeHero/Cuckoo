@@ -1,31 +1,29 @@
 ﻿using Native.Tool.IniConfig.Linq;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 
 namespace com.moehero.cuckoo.Code
 {
-    //TODO 重构
     internal static class Config
     {
-        private static IniSection _ini;
-        private static IniObject _iniObject;
+        private static IniSection _config;
+        private static IniObject _iniFile;
+
+        private static string _appDirectory;
+        private static ObservableCollection<long> _enabledGruops;
+        private static ObservableCollection<long> _adminList;
 
         private static void InitConfig() {
             var path = AppDirectory + "Config.ini";
             if(!File.Exists(path)) File.WriteAllText(path, "");
-            _iniObject = IniObject.Load(path);
-            _ini = _iniObject.Find(s => s.Name == "Application") ?? new IniSection("Application");
-
-            EnabledGroups = GetValue<long>("EnabledGroups");
+            _iniFile = IniObject.Load(path);
+            _config = _iniFile.Find(s => s.Name == "Application") ?? new IniSection("Application");
         }
 
         public static long OwnerNumber { get; } = 562416714;
-
-        private static string _appDirectory;
 
         public static string AppDirectory {
             get => _appDirectory;
@@ -39,115 +37,81 @@ namespace com.moehero.cuckoo.Code
         /// 机器人开关
         /// </summary>
         internal static bool Enabled {
-            get => GetValue(true);
-            set => SetValue(value);
+            get => Get(true);
+            set => Set(value);
         }
-
-        private static ObservableCollection<long> _enabledGruops;
 
         /// <summary>
         /// 群启用列表
         /// </summary>
         internal static ObservableCollection<long> EnabledGroups {
-            get {
-                if(_enabledGruops == null) EnabledGroups = new ObservableCollection<long>();
-                return _enabledGruops;
-            }
-            set {
-                if(_enabledGruops != null) _enabledGruops.CollectionChanged -= CollectionChanged;
-                _enabledGruops = value;
-                SetValue(_enabledGruops, "EnabledGroups");
-                _enabledGruops.CollectionChanged += CollectionChanged;
-
-                void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-                    SetValue(_enabledGruops, "EnabledGroups");
-                }
-            }
+            get => _enabledGruops ?? (_enabledGruops = Get<long>());
         }
-
-        private static ObservableCollection<long> _admins;
 
         /// <summary>
         /// 管理员列表
         /// </summary>
-        internal static ObservableCollection<long> Admins {
-            get {
-                if(_admins == null) Admins = new ObservableCollection<long>();
-                return _admins;
+        internal static ObservableCollection<long> AdminList {
+            get => _adminList ?? (_adminList = Get<long>());
+        }
+
+        #region Get & Set
+
+        internal static string Get(string defaultValue = "", [CallerMemberName] string key = "") {
+            var value = _config[key];
+            if(value == IniValue.Empty) return defaultValue;
+            return value.ToString();
+        }
+
+        internal static bool Get(bool defaultValue = false, [CallerMemberName] string key = "") {
+            var value = Get(defaultValue.ToString(), key);
+            if(!bool.TryParse(value, out bool v)) return defaultValue;
+            return v;
+        }
+
+        internal static long Get(long defaultValue = 0, [CallerMemberName] string key = "") {
+            var value = Get(defaultValue.ToString(), key);
+            if(!long.TryParse(value, out long v)) return defaultValue;
+            return v;
+        }
+
+        internal static ushort Get(ushort defaultValue = 0, [CallerMemberName] string key = "") {
+            var value = Get(defaultValue.ToString(), key);
+            if(!ushort.TryParse(value, out ushort v)) return defaultValue;
+            return v;
+        }
+
+        internal static ObservableCollection<T> Get<T>(T[] defaultValue = null, [CallerMemberName] string key = "") {
+            ObservableCollection<T> result;
+            var value = Get("", key).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            if(value.Length == 0) {
+                result = new ObservableCollection<T>(defaultValue ?? new T[0]);
+                result.CollectionChanged += (sender, e) => Set(result, key);
+                return result;
             }
-            set {
-                if(_admins != null) _admins.CollectionChanged -= CollectionChanged;
-                _admins = value;
-                SetValue(_admins, "Admins");
-                _admins.CollectionChanged += CollectionChanged;
-
-                void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e) {
-                    SetValue(_admins, "Admins");
-                }
-            }
-        }
-
-        #region 获取&设置
-
-        private static string GetValue(string defaultValue = "", [CallerMemberName] string key = "") {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            return _ini[key]?.ToString() ?? defaultValue;
-        }
-
-        private static bool GetValue(bool defaultValue = false, [CallerMemberName] string key = "") {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            if(!bool.TryParse(GetValue("", key), out bool value)) return defaultValue;
-            return value;
-        }
-
-        private static long GetValue(long defaultValue = 0, [CallerMemberName] string key = "") {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            if(!long.TryParse(GetValue("", key), out long value)) return defaultValue;
-            return value;
-        }
-
-        private static ushort GetValue(ushort defaultValue = 0, [CallerMemberName] string key = "") {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            if(!ushort.TryParse(GetValue("", key), out ushort value)) return defaultValue;
-            return value;
-        }
-
-        private static ObservableCollection<T> GetValue<T>(string key) {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            var value = GetValue("", key).Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-            if(value.Length == 0) return new ObservableCollection<T>();
             var values = Array.ConvertAll(value, v => (T)Convert.ChangeType(v, typeof(T)));
-            return new ObservableCollection<T>(values);
+            result = new ObservableCollection<T>(values);
+            result.CollectionChanged += (sender, e) => Set(result, key);
+            return result;
         }
 
-        private static void SetValue(string value, [CallerMemberName] string key = "") {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            if(_ini.ContainsKey(key)) _ini[key] = new IniValue(value);
-            else _ini.Add(key, value);
+        internal static void Set(string value, [CallerMemberName] string key = "") {
+            _config[key] = new IniValue(value);
+            _iniFile.Exists(s => s.Name == "Application");
             //保存
-            if(_iniObject.Exists(s => s.Name == "Application")) _iniObject["Application"] = _ini;
-            else _iniObject.Add(_ini);
-            _iniObject.Save();
+            if(_iniFile.Exists(s => s.Name == "Application")) _iniFile["Application"] = _config;
+            else _iniFile.Add(_config);
+            _iniFile.Save();
         }
 
-        private static void SetValue(bool value, [CallerMemberName] string key = "") {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            SetValue(value.ToString(), key);
-        }
+        internal static void Set(bool value, [CallerMemberName] string key = "") => Set(value.ToString(), key);
 
-        private static void SetValue(long value, [CallerMemberName] string key = "") {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            SetValue(value.ToString(), key);
-        }
+        internal static void Set(long value, [CallerMemberName] string key = "") => Set(value.ToString(), key);
 
-        private static void SetValue(ushort value, [CallerMemberName] string key = "") {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            SetValue(value.ToString(), key);
-        }
+        internal static void Set(ushort value, [CallerMemberName] string key = "") => Set(value.ToString(), key);
 
-        private static void SetValue<T>(ObservableCollection<T> value, string key) {
-            if(string.IsNullOrEmpty(key)) throw new NotImplementedException("动态获取Key失败");
-            SetValue(value.Aggregate("", (current, p) => $"{current}{p},").TrimEnd(','), key);
+        internal static void Set<T>(ObservableCollection<T> value, string key) {
+            Set(value.Aggregate("", (current, p) => $"{current}{p},").TrimEnd(','), key);
         }
 
         #endregion

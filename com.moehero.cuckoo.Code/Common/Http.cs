@@ -1,11 +1,8 @@
 ﻿using Newtonsoft.Json.Linq;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web;
 
 namespace com.moehero.cuckoo.Code
 {
@@ -23,7 +20,7 @@ namespace com.moehero.cuckoo.Code
             req.Proxy = null;
             req.KeepAlive = false;
             req.CookieContainer = request.Cookie;
-            req.AllowAutoRedirect = false;
+            if(request.Headers != null) req.Headers = request.Headers;
 
             if(request.Method.ToUpper() == "POST") {
                 req.ContentType = "application/x-www-form-urlencoded";
@@ -41,30 +38,20 @@ namespace com.moehero.cuckoo.Code
             }
         }
 
-        public static Task<string> Get(string url, CookieContainer cookie = null) {
-            return Task.Run(() => SendRequest(new HttpRequest(url) { Cookie = cookie }));
+        public static Task<string> Get(string url, CookieContainer cookie = null, WebHeaderCollection headers = null) {
+            return Task.Run(() => SendRequest(new HttpRequest(url) { Cookie = cookie, Headers = headers }));
         }
 
-        public async static Task<JObject> GetJson(string url, CookieContainer cookie = null) {
-            return JObject.Parse(await Get(url, cookie));
+        public async static Task<JObject> GetJson(string url, CookieContainer cookie = null, WebHeaderCollection headers = null) {
+            return JObject.Parse(await Get(url, cookie, headers));
         }
 
-        public static Task<string> Post(string url, string body, CookieContainer cookie = null) {
-            return Task.Run(() => SendRequest(new HttpRequest(url) { Method = "POST", Body = body, Cookie = cookie }));
+        public static Task<string> Post(string url, string body, CookieContainer cookie = null, WebHeaderCollection headers = null) {
+            return Task.Run(() => SendRequest(new HttpRequest(url) { Method = "POST", Body = body, Cookie = cookie, Headers = headers }));
         }
 
-        public async static Task<JObject> PostJson(string url, string body, CookieContainer cookie = null) {
-            return JObject.Parse(await Post(url, body, cookie));
-        }
-
-        public static string UrlEncode(string str) {
-            if(str == null) return "";
-            var result = "";
-            foreach(var c in str) {
-                if(HttpUtility.UrlEncode(c.ToString()).Length > 1) result += HttpUtility.UrlEncode(c.ToString()).ToUpper();
-                else result += c;
-            }
-            return result;
+        public async static Task<JObject> PostJson(string url, string body, CookieContainer cookie = null, WebHeaderCollection headers = null) {
+            return JObject.Parse(await Post(url, body, cookie, headers));
         }
     }
 
@@ -75,8 +62,13 @@ namespace com.moehero.cuckoo.Code
         }
 
         public string Url { get; }
+
         public string Body { get; set; }
+
         public string Method { get; set; } = "GET";
+
+        public WebHeaderCollection Headers { get; set; }
+
         public CookieContainer Cookie { get; set; }
     }
 }

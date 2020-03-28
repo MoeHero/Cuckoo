@@ -24,8 +24,8 @@ namespace com.moehero.cuckoo.Code.Feeds
                 if(_currentMusicList.Contains(info.Id)) continue;
                 _currentMusicList.Add(info.Id);
                 return new FeedsInfo {
-                    Title = "丧妹新歌出炉啦! 快来听歌点赞分享噢!",
-                    Description = info.Name,
+                    Slogan = GetRandomSlogan(),
+                    Title = info.Name,
                     Url = "https://music.163.com/song/" + info.Id,
                 };
             }

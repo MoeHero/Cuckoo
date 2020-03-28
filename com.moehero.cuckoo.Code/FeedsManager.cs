@@ -2,12 +2,15 @@
 using Native.Sdk.Cqp;
 using System.Collections.Generic;
 using System.Timers;
+using System.Linq;
 
 namespace com.moehero.cuckoo.Code
 {
-    internal static class CheckerManager
+    internal static class FeedsManager
     {
         private const int CHECKER_INTERVAL = 60 * 1000;
+
+        public static List<string> FeedsIds = new List<string>();
 
 
         private static readonly List<FeedsBase> _feedsList = new List<FeedsBase> {
@@ -25,13 +28,15 @@ namespace com.moehero.cuckoo.Code
 
         internal static void Init(CQApi cqApi) {
             _api = cqApi;
+
+            FeedsIds.AddRange(from f in _feedsList select f.Id);
             _timer.Elapsed += (sender, e) => CheckUpdates();
             _timer.Start();
         }
 
         private async static void CheckUpdates() {
-            foreach(var checker in _feedsList) {
-                var feedsInfo = await checker.CheckUpdate();
+            foreach(var feeds in _feedsList) {
+                var feedsInfo = await feeds.CheckUpdate();
                 if(feedsInfo == null) continue;
                 SendMessageToEnabledGroup(feedsInfo.ToString());
             }

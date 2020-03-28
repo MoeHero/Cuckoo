@@ -18,8 +18,8 @@ namespace com.moehero.cuckoo.Code.Function
         public override bool CanRun() => _qq == Config.OwnerNumber;
 
         public override void Run() {
-            if(!long.TryParse(_adminQQ, out long qq) || Config.Admins.Contains(qq)) return;
-            Config.Admins.Add(qq);
+            if(!long.TryParse(_adminQQ, out long qq) || Config.AdminList.Contains(qq)) return;
+            Config.AdminList.Add(qq);
             _group.SendGroupMessage($"已将{CQApi.CQCode_At(qq)}设置为管理员!");
         }
     }
