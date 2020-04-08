@@ -28,7 +28,7 @@ namespace com.moehero.cuckoo.Code.Feeds
                 return new FeedsInfo {
                     Slogan = GetRandomSlogan(),
                     Title = info["title"].Value<string>(),
-                    Url = "https://www.bilibili.com/video/av" + info["aid"].Value<string>(),
+                    Url = "https://b23.tv/av" + info["aid"].Value<string>(),
                 };
             }
             return null;
@@ -36,7 +36,7 @@ namespace com.moehero.cuckoo.Code.Feeds
 
         private long GetTimestamp(DateTime dateTime) {
             var date1970 = TimeZone.CurrentTimeZone.ToLocalTime(new DateTime(1970, 1, 1));
-            return (long) (dateTime - date1970).TotalSeconds;
+            return (long)(dateTime - date1970).TotalSeconds;
         }
-}
+    }
 }

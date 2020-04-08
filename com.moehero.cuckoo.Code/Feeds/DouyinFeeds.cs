@@ -41,13 +41,14 @@ namespace com.moehero.cuckoo.Code.Feeds
             var s = await Http.GetJson("https://api.anoyi.com/api/signature/ies/" + _uid);
             var r = await Http.GetJson($"https://api.anoyi.com/api/signature/ies/{_uid}/post?s={s["sign"].Value<string>()}");
 
+            if(!r.ContainsKey("aweme_list")) return null; 
             foreach(var info in r["aweme_list"]) {
                 videoInfos.Add(new VideoInfo { Id = info["aweme_id"].Value<string>(), Description = info["desc"].Value<string>() });
             }
             return videoInfos.ToArray();
         }
 
-        private struct VideoInfo
+        private class VideoInfo
         {
             public string Id { get; set; }
 

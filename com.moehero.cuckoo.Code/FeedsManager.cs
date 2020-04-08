@@ -3,6 +3,7 @@ using Native.Sdk.Cqp;
 using System.Collections.Generic;
 using System.Timers;
 using System.Linq;
+using System;
 
 namespace com.moehero.cuckoo.Code
 {
@@ -43,7 +44,7 @@ namespace com.moehero.cuckoo.Code
         }
 
         private static void SendMessageToEnabledGroup(string msg) {
-            foreach(var group in Config.EnabledGroups) _api.SendGroupMessage(group, msg);
+            foreach(var group in Config.EnabledGroups) _api.SendGroupMessage(group, CQApi.CQCode_AtAll() + Environment.NewLine, msg);
         }
     }
 }

@@ -12,7 +12,7 @@ namespace com.moehero.cuckoo.Code.Function
             _qq = qq;
         }
 
-        public override bool CanRun() => _qq == Config.OwnerNumber;
+        public override bool CanRun() => Config.AdminList.Contains(_qq.Id);
 
         public override void Run() {
             if(Config.EnabledGroups.Contains(_group.Id)) return;
